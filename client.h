@@ -47,6 +47,9 @@ public slots:
     void sulroom(QString room);
     void suuid(int uuid);
 
+protected:
+    void loadServerConfig();
+
 private:
 
     ServerCommand getMsgStatus(QString message);
@@ -78,6 +81,9 @@ private:
     int uuid;
 
     friend class MainWindow;
+
+    QString hostAddress;
+    quint16 port;
 
 };
 

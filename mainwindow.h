@@ -35,6 +35,8 @@ public slots:
     void usersListRoom(QStringList users);
     void userNameTaken(QString user);
     void userListFailed();
+    void loadServerConfig();
+    void changeServerConfig();
 
 signals:
     void tryClose();
@@ -75,6 +77,8 @@ private:
     QThread *workerThread;
     QHash<QString, QStringList> users;
     QHash<QString, QString> roomText;
+
+    QAction *settingsAction;
 };
 
 #endif // MAINWINDOW_H

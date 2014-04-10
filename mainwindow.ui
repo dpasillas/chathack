@@ -56,7 +56,7 @@ QLineEdit, QTextEdit, QTextBrowser, QListWidget{
 	border-width: 1px;
 }
 
-QLabel {
+#centralWidget &gt; QLabel {
 	color: white;
 }
 
@@ -94,57 +94,11 @@ QTextBrowser, QListWidget{
  }</string>
   </property>
   <widget class="QWidget" name="centralWidget">
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="8">
-     <widget class="QPushButton" name="logoutButton">
-      <property name="minimumSize">
-       <size>
-        <width>27</width>
-        <height>27</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>27</width>
-        <height>27</height>
-       </size>
-      </property>
-      <property name="mouseTracking">
-       <bool>false</bool>
-      </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/images/ejectbutton.png</normaloff>:/images/ejectbutton.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>25</width>
-        <height>25</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QLabel" name="chatMessageLabel">
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="roomLabel">
-      <property name="text">
-       <string>User@Room</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="5">
+    <item row="0" column="6">
      <widget class="QPushButton" name="leaveButton">
       <property name="minimumSize">
        <size>
@@ -170,33 +124,35 @@ QTextBrowser, QListWidget{
       </property>
      </widget>
     </item>
-    <item row="0" column="6">
-     <widget class="QPushButton" name="joinButton">
+    <item row="0" column="0">
+     <widget class="QLabel" name="chatIcon">
       <property name="minimumSize">
        <size>
-        <width>27</width>
-        <height>27</height>
+        <width>32</width>
+        <height>32</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>27</width>
-        <height>27</height>
+        <width>32</width>
+        <height>32</height>
        </size>
       </property>
-      <property name="focusPolicy">
-       <enum>Qt::NoFocus</enum>
+      <property name="styleSheet">
+       <string notr="true">border-style: solid;
+	border-width: 1px;
+	border-radius: 1px;
+	border-color: rgb(85, 0, 127);</string>
       </property>
       <property name="text">
        <string/>
       </property>
-      <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/images/plus.png</normaloff>:/images/plus.png</iconset>
+      <property name="pixmap">
+       <pixmap resource="resources.qrc">:/images/32x32transparentbg.png</pixmap>
       </property>
      </widget>
     </item>
-    <item row="0" column="9">
+    <item row="0" column="11">
      <widget class="QPushButton" name="closeButton">
       <property name="minimumSize">
        <size>
@@ -237,6 +193,20 @@ QTextBrowser, QListWidget{
       </property>
      </widget>
     </item>
+    <item row="0" column="5">
+     <widget class="QPushButton" name="emailButton">
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/images/email.png</normaloff>:/images/email.png</iconset>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="2">
      <spacer name="horizontalSpacer_3">
       <property name="orientation">
@@ -250,35 +220,82 @@ QTextBrowser, QListWidget{
       </property>
      </spacer>
     </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="chatIcon">
+    <item row="0" column="1">
+     <widget class="QLabel" name="roomLabel">
+      <property name="text">
+       <string>User@Room</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QLabel" name="chatMessageLabel">
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="9">
+     <widget class="QPushButton" name="logoutButton">
       <property name="minimumSize">
        <size>
-        <width>32</width>
-        <height>32</height>
+        <width>27</width>
+        <height>27</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
-        <width>32</width>
-        <height>32</height>
+        <width>27</width>
+        <height>27</height>
        </size>
       </property>
-      <property name="styleSheet">
-       <string notr="true">border-style: solid;
-	border-width: 1px;
-	border-radius: 1px;
-	border-color: rgb(85, 0, 127);</string>
+      <property name="mouseTracking">
+       <bool>false</bool>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
       </property>
       <property name="text">
        <string/>
       </property>
-      <property name="pixmap">
-       <pixmap resource="resources.qrc">:/images/32x32transparentbg.png</pixmap>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/images/ejectbutton.png</normaloff>:/images/ejectbutton.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>25</width>
+        <height>25</height>
+       </size>
       </property>
      </widget>
     </item>
     <item row="0" column="7">
+     <widget class="QPushButton" name="joinButton">
+      <property name="minimumSize">
+       <size>
+        <width>27</width>
+        <height>27</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>27</width>
+        <height>27</height>
+       </size>
+      </property>
+      <property name="focusPolicy">
+       <enum>Qt::NoFocus</enum>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="resources.qrc">
+        <normaloff>:/images/plus.png</normaloff>:/images/plus.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="8">
      <widget class="QPushButton" name="toggleMicButton">
       <property name="minimumSize">
        <size>
@@ -317,7 +334,7 @@ QTextBrowser, QListWidget{
       </property>
      </widget>
     </item>
-    <item row="1" column="0" colspan="10">
+    <item row="1" column="0" colspan="12">
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
        <widget class="QStackedWidget" name="stackedWidget">
@@ -653,17 +670,16 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </item>
-    <item row="0" column="4">
-     <widget class="QPushButton" name="emailButton">
+    <item row="0" column="10">
+     <widget class="QPushButton" name="serverConfigButton">
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
-      <property name="text">
-       <string/>
+      <property name="toolTip">
+       <string>Alt+S</string>
       </property>
-      <property name="icon">
-       <iconset resource="resources.qrc">
-        <normaloff>:/images/email.png</normaloff>:/images/email.png</iconset>
+      <property name="text">
+       <string>S</string>
       </property>
      </widget>
     </item>

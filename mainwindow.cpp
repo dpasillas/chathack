@@ -1,19 +1,24 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QApplication>
+#include <QSettings>
 #include <QMouseEvent>
 #include <QDebug>
 #include <QScrollBar>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QListWidgetItem>
+#include <QHostInfo>
 #include "program.cc"
+#include "serversettingsdialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     loginErrorTimer(0), movable(false),
     c(new Client()),
-    workerThread(new QThread(this))
+    workerThread(new QThread(this)),
+    settingsAction(new QAction(this))
 {
     workerThread->start();
     connect(workerThread,SIGNAL(finished()),workerThread,SLOT(deleteLater()));
@@ -23,6 +28,12 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
     hideLoggedInStuff();
     //ui->textBrowser->setOpenExternalLinks(true);
+
+    //gui actions
+    settingsAction->setShortcut(QKeySequence("Alt+S"));
+    ui->serverConfigButton->addAction(settingsAction);
+    connect(settingsAction,SIGNAL(triggered()),this,SLOT(changeServerConfig()));
+
     //button slots
     connect(ui->closeButton,SIGNAL(clicked()),this,SLOT(closeButton()));
     connect(ui->logoutButton,SIGNAL(clicked()),this,SLOT(logoutButton()));
@@ -30,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->joinButton,SIGNAL(clicked()),this,SLOT(joinButton()));
     connect(ui->leaveButton,SIGNAL(clicked()),this,SLOT(leaveButton()));
     connect(ui->emailButton,SIGNAL(clicked()),this,SLOT(emailButton()));
+    connect(ui->serverConfigButton,SIGNAL(clicked()),settingsAction,SLOT(trigger()));
 
     //GUI login slots
     connect(ui->loginButton,SIGNAL(clicked()),this,SLOT(loginButton()));
@@ -62,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(this,SIGNAL(badLogin(QString)),this,SLOT(displayLoginError(QString)));
     c->moveToThread(workerThread);
+
+    loadServerConfig();
 
     ui->roomsListWidget->installEventFilter(this);
     ui->usersListWidget->installEventFilter(this);
@@ -194,6 +208,7 @@ void MainWindow::showLoggedInStuff()
     ui->leaveButton->show();
     ui->joinButton->show();
     ui->emailButton->show();
+    ui->serverConfigButton->hide();
 }
 
 void MainWindow::hideLoggedInStuff()
@@ -206,12 +221,13 @@ void MainWindow::hideLoggedInStuff()
     ui->leaveButton->hide();
     ui->joinButton->hide();
     ui->emailButton->hide();
+    ui->serverConfigButton->show();
 }
 
 void MainWindow::setRoom(QString room)
 {
     QString user = c->userName;
-    ui->roomLabel->setText(QString("%1@%2").arg(user).arg(room));
+    ui->roomLabel->setText(QString("%1@%2").arg(user,room));
     ui->usersListWidget->clear();
     ui->usersListWidget->addItems(this->users[room]);
     ui->textBrowser->setHtml(this->roomText[room]);
@@ -333,4 +349,59 @@ void MainWindow::userNameTaken(QString user)
 void MainWindow::userListFailed()
 {
     QMessageBox::warning(this,"No User List","Retrieving the user list for this room failed!");
+}
+
+void MainWindow::loadServerConfig()
+{
+    QSettings settings;
+    QString ha = settings.value("server/hostaddress","").toString();
+    QHostInfo info = QHostInfo::fromName(ha);
+    if(info.addresses().size())
+        c->hostAddress = info.addresses().front().toString();
+    else
+        c->hostAddress = "127.0.0.1";
+
+    //settings.setValue("server/hostaddress");
+
+    //c->hostAddress = (ha=="")?QString("192.168.1.135"):ha;
+    quint16 p = settings.value("server/port",0).toUInt();
+    c->port = (p==0)?quint16(6501):p;
+
+}
+
+void MainWindow::changeServerConfig()
+{
+    QSettings settings;
+    QString hostName = settings.value("server/hostname","").toString();
+
+    if(hostName == "")
+        hostName = "localhost";
+
+    ServerSettingsDialog *dialog = new ServerSettingsDialog(this,hostName,QString::number(c->port));
+    int status = dialog->exec();
+
+    if(status == QDialog::Accepted)
+    {
+        QHostInfo info = QHostInfo::fromName(dialog->hostName);
+        if(info.addresses().size())
+        {
+            c->hostAddress = info.addresses().front().toString();
+            qDebug() << info.addresses().size();
+            c->port = dialog->port.toInt();
+
+            //settings.setValue("server/hostaddress",c->hostAddress);
+            settings.setValue("server/hostname",dialog->hostName);
+            settings.setValue("server/port",c->port);
+        }
+        else
+        {
+            QMessageBox::warning(this,"Host Resolution Error", "Unable to resolve the address of the specified host, please try again!");
+        }
+    }
+    else
+        qDebug() << "Failure!";
+    qDebug() <<"Finished! :P";
+
+    delete dialog;
+
 }

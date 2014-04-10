@@ -15,13 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     client.cpp \
-    program.cc
+    program.cc \
+    serversettingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     client.h \
-    statustype.h
+    statustype.h \
+    serversettingsdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    serversettingsdialog.ui
 
 RESOURCES += \
     resources.qrc

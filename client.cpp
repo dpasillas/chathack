@@ -7,16 +7,15 @@
 #include <QWidget>
 #include <QApplication>
 
-const QHostAddress DEFAULT_HOST("192.168.1.135");//"169.235.31.253");
-const quint16 DEFAULT_PORT = 6501;
+//default settings moved to void loadServerConfig()
+
 const quint16 BLOCK_SIZE = 1;
 int NUM_ARGS[NUM_COMMANDS];
-
-
 
 Client::Client(QObject *parent) :
     QObject(parent), micOn(false),exitFlag(false), uuid(-1)
 {
+    loadServerConfig();
     NUM_ARGS[CLOGIN] = 5;
     NUM_ARGS[CJOIN] = 4;
     NUM_ARGS[CLEAVE] = 4;
@@ -27,7 +26,7 @@ Client::Client(QObject *parent) :
     NUM_ARGS[CRECVMSG] = 5;
     NUM_ARGS[INVALID] = -1;
     NUM_ARGS[INCOMPLETE] = -1;
-    NUM_ARGS[CUUID] = 1;
+    NUM_ARGS[CUUID] = 3;
 
     tcpSocket = new QTcpSocket(this);
     blockSize = BLOCK_SIZE;
@@ -64,7 +63,7 @@ void Client::slogin(QString userName, QString roomName)
     this->userName = userName;
     if(tcpSocket->state() != QAbstractSocket::ConnectedState){
         qDebug() << "Connecting to server...";
-        tcpSocket -> connectToHost(DEFAULT_HOST, DEFAULT_PORT);
+        tcpSocket -> connectToHost(hostAddress, port);
     }
     else
     {
@@ -231,6 +230,7 @@ void Client::ReadSocket()
                 break;
             case CUUID:
                 cuuid();
+                break;
             case INVALID:
                 invalidMessage();
                 break;
@@ -316,6 +316,11 @@ void Client::suuid(int uuid)
 {
     QString serverMessage("suuid|%1|suuid\n");
     tcpSocket->write(serverMessage.arg(uuid).toStdString().c_str());
+}
+
+void Client::loadServerConfig()
+{
+
 }
 
 ServerCommand Client::getMsgStatus(QString message)
@@ -468,6 +473,7 @@ void Client::crecvmsg()
 {
     qDebug() << "RUNNING CRECVMSG";
     emit recievedText(cur_args[1],cur_args[2],cur_args[3]);
+
 }
 
 void Client::culroom()
@@ -488,7 +494,7 @@ void Client::cuuid()
     switch(StatusType::getStatus(status))
     {
     case StatusType::STATUS_SUCCESS:
-        sulroom(room);
+        sulroom(this->roomName);
         break;
     case StatusType::STATUS_FAILURE:
     case StatusType::STATUS_UST:

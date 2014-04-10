@@ -4,6 +4,8 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    QApplication::setOrganizationName("ChatHack Group");
+    QApplication::setApplicationName("BatChat");
     MainWindow w;
     w.show();
 
